@@ -1,0 +1,4 @@
+Find subdomains
+Check for subdomain takeover
+Use MassScan for port scanning
+Do github recon
