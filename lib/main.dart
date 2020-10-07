@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hacking_checklist/view/pages/categories_page.dart';
-import 'package:hacking_checklist/view/pages/checklist_page.dart';
-import 'package:hacking_checklist/view/pages/methodologies.dart';
+import 'package:hacking_checklist/view/pages/DetailsPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Methodology(),
+      home: DetailPage(),
     );
   }
 }

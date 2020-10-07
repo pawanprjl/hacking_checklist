@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hacking_checklist/database/model/MyChecklist.dart';
+import 'package:hacking_checklist/database/model/Tasks.dart';
 import 'package:hacking_checklist/database/repositories/ChecklistRepository.dart';
 import 'package:hacking_checklist/database/repositories/TargetRepository.dart';
+import 'package:hacking_checklist/database/repositories/TaskRepository.dart';
 import 'package:hacking_checklist/view/widgets/app_bar.dart';
 
 class ChecklistPage extends StatefulWidget {
@@ -26,34 +28,41 @@ class ChecklistState extends State<ChecklistPage> {
   MyChecklist _myChecklist;
 
   var _checklists = [];
+  var _tasks = [];
   int _targetId;
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   ChecklistRepository _checklistRepository;
   TargetRepository _targetRepository;
+  TaskRepository _taskRepository;
 
   @override
   void initState() {
     super.initState();
     _checklistRepository = new ChecklistRepository();
     _targetRepository = new TargetRepository();
+    _taskRepository = new TaskRepository();
     _asyncInitState();
   }
 
   _asyncInitState() async {
     _targetRepository.getTargetByName(targetName: _title).then((onValue) {
       _targetId = onValue.id;
-      _checklistRepository.getChecklistsOfTarget(_targetId).then((checklists) {
+      _checklistRepository.getChecklistsOfTarget(_targetId).then((checklists) async {
         for (MyChecklist checklist in checklists) {
           _checklists.add(checklist);
+          await _taskRepository.getTaskById(id: checklist.taskId).then((value){
+            _tasks.add(value.taskName);
+          });
         }
         setState(() {});
         if (_checklists.length == 0) {
-          _loadChecklistFromFile().then((value) async {
-            for (String line in value){
-              _myChecklist = new MyChecklist(line, 0, _targetId);
-              await _checklistRepository.addChecklist(new MyChecklist(line, 0, _targetId)).then((value){
+          _taskRepository.getAllTasks().then((value) async {
+            for (Task task in value){
+              _myChecklist = new MyChecklist(task.id, 0, _targetId);
+              _tasks.add(task.taskName);
+              await _checklistRepository.addChecklist(_myChecklist).then((value){
                 _checklists.add(_myChecklist);
                 setState(() {});
               });
@@ -95,14 +104,14 @@ class ChecklistState extends State<ChecklistPage> {
         physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) {
           return GestureDetector(
-            child: _showItem(_checklists[index]),
+            child: _showItem(_checklists[index], index),
           );
         },
       ),
     );
   }
 
-  Widget _showItem(MyChecklist checklist) {
+  Widget _showItem(MyChecklist checklist, int index) {
     return Container(
       child: new Row(
         children: <Widget>[
@@ -115,7 +124,7 @@ class ChecklistState extends State<ChecklistPage> {
                     _checklistValueChangedHandler(value, checklist);
                   })),
           Text(
-            checklist.taskName,
+            "${_tasks[index]}",
             style: GoogleFonts.lemonada(
               color: Colors.white,
             ),

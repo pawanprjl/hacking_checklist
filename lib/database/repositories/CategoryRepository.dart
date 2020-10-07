@@ -26,7 +26,7 @@ class CategoryRepository{
 
   Future<MyCategory> getCategoryById(int id) async {
     var dbClient = await db;
-    List<Map> map = await dbClient.query('CATEGORIES', where: "category = ?", whereArgs: [id]);
+    List<Map> map = await dbClient.query('CATEGORIES', where: "id = ?", whereArgs: [id]);
     return MyCategory.fromMap(map[0]);
   }
 

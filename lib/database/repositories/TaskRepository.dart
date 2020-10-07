@@ -17,4 +17,36 @@ class TaskRepository {
     dbClient.insert('TASKS', task.toMap());
     return true;
   }
+
+  Future<Task> getTaskByName({String taskName}) async {
+    var dbClient = await db;
+    List<Map> map = await dbClient.query('TASKS', where: "task_name = ?", whereArgs: [taskName]);
+    return Task.fromMap(map[0]);
+  }
+
+  Future<Task> getTaskById({int id}) async {
+    var dbClient = await db;
+    List<Map> map = await dbClient.query('TASKS', where: "id = ?", whereArgs: [id]);
+    return Task.fromMap(map[0]);
+  }
+
+  Future<int> deleteTask(String task) async {
+    var dbClient = await db;
+    return await dbClient.delete('TASKS', where: "task_name = ?", whereArgs: [task]);
+  }
+
+  Future<List<Task>> getAllTasks() async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query('TASKS');
+    List<Task> tasks = [];
+    for (Map map in maps){
+      tasks.add(Task.fromMap(map));
+    }
+    return tasks;
+  }
+
+  Future<int> updateTask(Task task) async {
+    var dbClient = await db;
+    return await dbClient.update('TASKS', task.toMap(), where: "id = ?", whereArgs: [task.id]);
+  }
 }

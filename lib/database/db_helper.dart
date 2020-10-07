@@ -40,28 +40,23 @@ class DBHelper {
 
     await db.execute('CREATE TABLE CHECKLISTS ('
         'id INTEGER PRIMARY KEY, '
-        'task_name TEXT, '
         'status INTEGER NOT NULL, '
+        'task_id INTEGER NOT NULL, '
         'target_id INTEGER NOT NULL, '
+        'FOREIGN KEY (task_id) REFERENCES TASKS (id) ON UPDATE CASCADE ON DELETE CASCADE, '
         'FOREIGN KEY (target_id) REFERENCES TARGETS (id) ON UPDATE CASCADE ON DELETE CASCADE'
         ')');
 
     await db.execute('CREATE TABLE TASKS ('
         'id INTEGER PRIMARY KEY, '
-        'task_name TEXT, '
+        'task_name TEXT'
         ')');
   }
 
   _onUpgrade(Database db, int previousVersion, int newVersion) async {
-    // if(previousVersion < newVersion) {
-    //   await db.execute('CREATE TABLE CHECKLISTS ('
-    //       'id INTEGER PRIMARY KEY, '
-    //       'task_name TEXT, '
-    //       'status INTEGER, '
-    //       'target_id INTEGER NOT NULL, '
-    //       'FOREIGN KEY (target_id) REFERENCES TARGETS (id) ON UPDATE CASCADE ON DELETE CASCADE'
-    //       ')');
-    // }
+    if(previousVersion < newVersion) {
+
+    }
   }
 
 

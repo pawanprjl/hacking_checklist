@@ -1,21 +1,21 @@
 class MyChecklist{
   int id;
-  String taskName;
+  int taskId;
   int status;
   int targetId;
 
-  MyChecklist(this.taskName, this.status, this.targetId);
+  MyChecklist(this.taskId, this.status, this.targetId);
 
   Map<String, dynamic> toMap() => {
     'id' : id,
-    'task_name': taskName,
+    'task_id': taskId,
     'status': status,
     'target_id': targetId,
   };
 
   MyChecklist.fromMap(Map<String, dynamic> map){
     id = map['id'];
-    taskName = map['task_name'];
+    taskId = map['task_id'];
     status = map['status'];
     targetId = map['target_id'];
   }
